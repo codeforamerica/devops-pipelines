@@ -1,12 +1,15 @@
 name: Plan the deployment pipeline
 
 on:
-  pull_request:
   workflow_call:
     inputs:
       environment:
         required: true
         type: string
+    outputs:
+      plan:
+        description: "The plan output from the tofu plan command"
+        value: ${{ jobs.plan.outputs.plan }}
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -23,6 +26,8 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    outputs:
+      plan: ${{ steps.plan.outputs.stdout }}
     steps:
       - run: echo "${{ inputs.environment }}"
 
@@ -44,5 +49,8 @@ jobs:
         run: tofu init
 
       - name: Plan changes
+        id: plan
         working-directory: ./tofu/environment/${{ inputs.environment }}
-        run: tofu plan
+        run: tofu plan -no-color
+
+      - run: echo "${{ steps.plan.outputs.stdout }}"

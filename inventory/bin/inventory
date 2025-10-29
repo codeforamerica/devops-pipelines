@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
+require 'bundler/setup'
+
+require 'cfa-devops-inventory'
+require 'thor'
+
+module CfaDevops
+  module Inventory
+    # Inventory CLI tool for the Code for America DevOps team.
+    class CLI < Thor
+      def self.exit_on_failure?
+        true
+      end
+
+      desc 'collect', 'Collect and inventory from all sources'
+      def collect
+        say 'Collecting inventory...', :green
+        results = CfaDevops::Inventory.collect
+        if results.values.any?(false)
+          say_error "#{results.values.tally[false]} inventories failed to collect.", :red
+          exit 1
+        end
+
+        say "Collected #{bold(results.length)} inventories.", :green
+      end
+
+      desc 'sync', 'Collect and sync inventory from all sources'
+      def sync
+        say 'Collecting and syncing inventory...', :green
+        results = CfaDevops::Inventory.run
+        if results.values.any?(false)
+          say_error "#{results.values.tally[false]} inventories failed to collect.", :red
+          exit 1
+        end
+
+        say "Collected and synced #{bold(results.length)} inventories.", :green
+      end
+
+      desc 'version', 'Show the current version'
+      def version
+        say CfaDevops::Inventory::VERSION
+      end
+
+      # Helper methods that will not be exposed as commands.
+      no_commands do
+        # Bold a string for terminal output.
+        #
+        # @param string [String] The string to bold.
+        # @return [String] The bolded string.
+        def bold(string)
+          "\e[1m#{string}\e[22m"
+        end
+      end
+    end
+  end
+end
+
+CfaDevops::Inventory::CLI.start(ARGV)

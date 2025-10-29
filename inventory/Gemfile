@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+gemspec
+
+group :development do
+  gem 'rake', '~> 13.2'
+  gem 'rubocop', '~> 1.75'
+  gem 'rubocop-md', '~> 2.0'
+  gem 'rubocop-performance', '~> 1.25'
+  gem 'rubocop-rake', '~> 0.7'
+  gem 'rubocop-thread_safety', '~> 0.7'
+  gem 'rubocop-yard', '~> 0.10'
+end

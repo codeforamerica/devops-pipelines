@@ -1,0 +1,41 @@
+name: Inventory Sync
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to collect and sync inventory for.
+        default: production
+        required: true
+        type: environment
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    name: Collect and sync inventory
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: ./inventory
+      - name: Collect and sync inventory
+        working-directory: ./inventory
+        env:
+          LOG_LEVEL: debug
+          TRELICA_CLIENT_ID: ${{ secrets.TRELICA_CLIENT_ID }}
+          TRELICA_CLIENT_SECRET: ${{ secrets.TRELICA_CLIENT_SECRET }}
+          NOTION_API_TOKEN: ${{ secrets.NOTION_API_TOKEN }}
+          NOTION_SYSTEM_DATA_SOURCE_ID: ${{ secrets.NOTION_SYSTEM_DATA_SOURCE_ID }}
+        run:
+          bin/inventory sync

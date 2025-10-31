@@ -1,0 +1,26 @@
+require:
+  - rubocop-yard
+
+plugins:
+  - rubocop-md
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-thread_safety
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: true
+  TargetRubyVersion: 3.4
+
+Metrics/MethodLength:
+  CountAsOne:
+    - array
+    - hash
+    - method_call
+
+# Exclude our main gem include from the file naming convention, to keep it
+# consistent with the gem name.
+Naming/FileName:
+  Exclude:
+    - lib/cfa-devops-inventory.rb
+    - README.md

@@ -41,27 +41,39 @@ inventory collection process. To use the tool, follow these steps:
 
 1. Clone the repository to your local machine:
 
-   ```bash
-   git clone git@github.com:codeforamerica/devops-pipelines.git
-   ```
+    ```bash
+    git clone git@github.com:codeforamerica/devops-pipelines.git
+    ```
 
 1. Navigate to the inventory collection directory:
 
-   ```bash
-   cd devops-pipelines/inventory
-   ```
+    ```bash
+    cd devops-pipelines/inventory
+    ```
    
 1. Install the required dependencies using Bundler:
 
-   ```bash
-   bundle install
-   ```
+    ```bash
+    bundle install
+    ```
    
 1. Run the CLI tool, this should display the available commands:
 
     ```bash
     ./bin/inventory
     ```
+   
+1. Run the full inventory collection process:
+
+    ```bash
+    ./bin/inventory sync
+    ```
+   
+## GitHub Actions
+
+The inventory collection process is automated using GitHub Actions. The
+`inventory.yaml` workflow is configured to run daily, and can be triggered
+manually for ad-hoc updates.
 
 [^1]: This project focuses on organizational inventory data, excluding
       project-specific assets that may be more sensitive in nature.

@@ -80,7 +80,7 @@ module CfaDevops
           user_emails[email]
         end
 
-        # List all uses in the Notion workspace.
+        # List all users in the Notion workspace.
         #
         # @return [Array<Hash>] List of users.
         def users

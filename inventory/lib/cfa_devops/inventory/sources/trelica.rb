@@ -60,7 +60,7 @@ module CfaDevops
               next [nil, nil]
             end
 
-            [ROLE_MAP[role[:name]], role[:members].map { |m| m[:name] }]
+            [ROLE_MAP[role[:name]], role[:members].map { |m| m[:email] }]
           end.compact
         end
       end

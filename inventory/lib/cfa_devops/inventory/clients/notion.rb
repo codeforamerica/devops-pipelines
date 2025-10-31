@@ -8,6 +8,9 @@ module CfaDevops
       # Client for interacting with the Notion API.
       class Notion < Base
         API_VERSION = '2025-09-03'
+        DEFAULT_RESULTS_PER_PAGE = 100
+
+        class UserNotFoundError < ArgumentError; end
 
         # Retrieve a database by its ID.
         #
@@ -65,7 +68,45 @@ module CfaDevops
           conn.patch("pages/#{id}", { icon:, properties: }).body
         end
 
+        # Look up a user ID by their email address.
+        #
+        # @param email [String] The email address of the user.
+        # @return [String] The user ID.
+        #
+        # @raise [UserNotFoundError] If no user is found with the given email.
+        def user_id_by_email(email:)
+          raise UserNotFoundError, 'Unable to find user by email.' unless user_emails[email]
+
+          user_emails[email]
+        end
+
+        # List all uses in the Notion workspace.
+        #
+        # @return [Array<Hash>] List of users.
+        def users
+          users = []
+          params = { page_size: DEFAULT_RESULTS_PER_PAGE }
+
+          loop do
+            response = conn.get('users', params).body
+            users.concat(response[:results])
+            params[:start_cursor] = response[:next_cursor]
+
+            break unless response[:has_more]
+          end
+
+          users
+        end
+
         private
+
+        def user_emails
+          @user_emails ||= users.to_h do |user|
+            next [nil, nil] unless user[:type] == 'person'
+
+            [user[:person][:email], user[:id]]
+          end.compact
+        end
 
         # Establish a connection to the Notion API.
         #

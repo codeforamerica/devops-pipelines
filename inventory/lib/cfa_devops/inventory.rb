@@ -59,7 +59,7 @@ module CfaDevops
     #
     # @param source [Sources::Source] The source that was being processed.
     # @param error [StandardError] The error that occurred.
-    # @return [Array] Valid promise repose representing a failure.
+    # @return [Array] Valid promise response representing a failure.
     private_class_method def self.handle_exception(source, error)
       config.logger.error("An error occurred: #{error.message}")
       [source.name, false]

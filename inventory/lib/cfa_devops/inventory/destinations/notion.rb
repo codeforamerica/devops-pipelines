@@ -14,12 +14,17 @@ module CfaDevops
         # Write the inventory to Notion
         #
         # @param inventory [Array<Hash>] The inventory data to write.
+        # @return [Boolean] Whether all items were written successfully.
         def write(inventory)
           return nil if inventory.nil? || inventory.empty?
 
-          inventory.each do |item|
+          inventory.map do |item|
             upsert_item(item)
-          end
+            true
+          rescue StandardError => e
+            @config.logger.error("Failed to sync inventory item #{item[:name]}: #{e.message}")
+            false
+          end.all?(true)
         end
 
         private
@@ -37,7 +42,7 @@ module CfaDevops
         # @param item [Hash] The inventory item.
         def create_item(item)
           @config.logger.debug("Creating entry for #{item[:name]}")
-          client.create_page(parent_id: ENV.fetch('NOTION_DATASOURCE_ID', nil), properties: properties(item),
+          client.create_page(parent_id: data_source_id, properties: properties(item),
                              icon: icon(item))
         end
 
@@ -67,6 +72,9 @@ module CfaDevops
 
         # Look up an existing entry for an inventory item.
         #
+        # This method queries the Notion API to find an existing entry in the
+        # data source that matches the given item's name.
+        #
         # @param item [Hash] The inventory item.
         # @return [Hash, nil] The existing entry or nil if not found.
         def entry_for_item(item)
@@ -90,6 +98,19 @@ module CfaDevops
         # @abstract Subclasses must implement this method.
         def properties(item)
           raise NotImplementedError, 'Subclasses must implement properties method'
+        end
+
+        # Resolve a list of email addresses to Notion user IDs.
+        #
+        # @param emails [Array<String>] The list of email addresses.
+        # @return [Array<Hash>] The list of Notion user ID hashes suitable for
+        #   use with the Notion API.
+        def resolve_people(emails)
+          emails.filter_map do |email|
+            { id: @client.user_id_by_email(email:) }
+          rescue Clients::Notion::UserNotFoundError
+            @config.logger.warn("Unable to find Notion user for email: #{email}")
+          end
         end
       end
     end

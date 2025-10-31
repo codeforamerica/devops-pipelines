@@ -14,13 +14,14 @@ module CfaDevops
             @config.notion.system_data_source_id
           end
 
-          # @todo Lookup owners and admins in Notion users.
-          def properties(item)
+          def properties(item) # rubocop:disable  Metrics/AbcSize
             props = {}
             props['Name'] = { title: [{ text: { content: item[:name] } }] }
             props['Type'] = { rich_text: [{ text: { content: item[:category] } }] } if item[:category]
             props['External System'] = { rich_text: [{ text: { content: item[:external_system] } }] }
             props['External ID'] = { rich_text: [{ text: { content: item[:external_id] } }] }
+            props['Owners'] = { people: resolve_people(item[:owners]) } if item[:owners] && !item[:owners].empty?
+            props['Admins'] = { people: resolve_people(item[:admins]) } if item[:admins] && !item[:admins].empty?
 
             props
           end

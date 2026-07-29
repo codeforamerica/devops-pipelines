@@ -29,7 +29,9 @@ jobs:
     outputs:
       plan: ${{ steps.plan.outputs.stdout }}
     steps:
-      - run: echo "${{ inputs.environment }}"
+      - env:
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: echo "$ENVIRONMENT"
 
       - name: Checkout code
         uses: actions/checkout@v4

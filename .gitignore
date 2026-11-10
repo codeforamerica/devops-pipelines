@@ -1,11 +1,7 @@
 # Ignore IDE configs.
 .idea
 *.iml
-
-# Ignore local files created by terraform.
-.terraform/
-*.tfstate
-*.tfstate.backup
+.vscode
 
 # Ignore local environment files.
 .env.*
@@ -14,3 +10,4 @@
 # Ignore installed dependencies
 vendor
 node_modules
+scratch

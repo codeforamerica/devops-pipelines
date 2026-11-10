@@ -15,7 +15,7 @@ module CfaDevops
         true
       end
 
-      desc 'collect', 'Collect and inventory from all sources'
+      desc 'collect', 'Collect inventory from all sources without syncing'
       def collect
         say 'Collecting inventory...', :green
         results = CfaDevops::Inventory.collect

@@ -1,0 +1,42 @@
+name: Pull request checks
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ruby-lint:
+    name: Lint Ruby code
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./inventory
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          bundler-cache: true
+          working-directory: ./inventory
+      - name: Lint code
+        run: bundle exec rubocop
+
+  ruby-test:
+    name: Test Ruby code
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./inventory
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          bundler-cache: true
+          working-directory: ./inventory
+      - name: Run tests
+        run: bundle exec rspec

@@ -19,11 +19,11 @@ Gem::Specification.new do |s|
     'source_code_uri' => 'https://github.com/codeforamerica/devops-pipelines'
   }
 
-  s.required_ruby_version = '>= 3.4'
+  s.required_ruby_version = '>= 4.0'
 
   s.add_dependency 'base64', '~> 0.3'
   s.add_dependency 'configsl', '~> 1.0'
   s.add_dependency 'csv', '~> 3.3'
-  s.add_dependency 'faraday', '~> 2.14'
-  s.add_dependency 'thor', '~> 1.4'
+  s.add_dependency 'faraday', '~> 2.15'
+  s.add_dependency 'thor', '~> 1.5'
 end

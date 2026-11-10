@@ -10,7 +10,7 @@ plugins:
 AllCops:
   NewCops: enable
   SuggestExtensions: true
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 4.0
 
 Metrics/MethodLength:
   CountAsOne:
